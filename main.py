@@ -17,13 +17,19 @@ ENTRY = (
 OUTPUT = "/output/entry.txt"
 
 
+def validate(text):
+    """Check the entry text meets the bounty rules. Returns the text."""
+    assert 1 <= len(text) <= 120, f"length {len(text)} out of range"
+    assert text == text.strip(), "leading/trailing whitespace"
+    assert "\n" not in text and "\r" not in text, "must be a single line"
+    assert all(ord(c) >= 32 for c in text), "control characters found"
+    assert text.strip(), "must not be only whitespace"
+    assert "  " not in text, "double space found"
+    return text
+
+
 def main():
-    line = ENTRY
-    assert 1 <= len(line) <= 120, f"length {len(line)} out of range"
-    assert line == line.strip(), "leading/trailing whitespace"
-    assert "\n" not in line and "\r" not in line, "must be a single line"
-    assert all(ord(c) >= 32 for c in line), "control characters found"
-    assert line.strip(), "must not be only whitespace"
+    line = validate(ENTRY)
 
     os.makedirs(os.path.dirname(OUTPUT), exist_ok=True)
     with open(OUTPUT, "w", encoding="utf-8", newline="\n") as f:
